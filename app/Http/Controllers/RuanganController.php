@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Ruangan;
+use App\Models\ruangan;
 use App\Http\Requests\storeRuanganReq;
 use App\Http\Requests\updateRuanganReq;
 
@@ -19,7 +19,7 @@ class RuanganController extends Controller
         $perPage   = request()->query('perPage') ?? 10;
         $search    = request()->query('search');
 
-        $query = Ruangan::query();
+        $query = ruangan::query();
 
         if ($search) {
             $query->where(function ($q) use ($search) {
@@ -43,9 +43,9 @@ class RuanganController extends Controller
      */
     public function store(storeRuanganReq $request)
     {
-        Ruangan::create([
+        ruangan::create([
             ...$request->validated(),
-            'kode_ruangan'   => Ruangan::generateKode(),
+            'kode_ruangan'   => ruangan::generateKode(),
             'status_ruangan' => 'tersedia',
         ]);
 
@@ -57,7 +57,7 @@ class RuanganController extends Controller
     /**
      * UPDATE
      */
-    public function update(updateRuanganReq $request, Ruangan $ruangan)
+    public function update(updateRuanganReq $request, ruangan $ruangan)
     {
         $ruangan->update($request->validated());
 
@@ -69,7 +69,7 @@ class RuanganController extends Controller
     /**
      * DESTROY
      */
-    public function destroy(Ruangan $ruangan)
+    public function destroy(ruangan $ruangan)
     {
         $ruangan->delete();
 
