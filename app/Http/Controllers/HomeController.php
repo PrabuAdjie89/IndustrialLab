@@ -6,7 +6,7 @@ use App\Models\Barang;
 use App\Models\BarangUnit;
 use App\Models\Peminjaman;
 use App\Models\PeminjamanBarang;
-use App\Models\Ruangan;
+use App\Models\ruangan;
 use App\Models\PeminjamanRuangan;
 use App\Models\BarangMasuk;
 use App\Models\BarangKeluar;
@@ -19,7 +19,7 @@ class HomeController extends Controller
 
         $totalPeminjaman = PeminjamanBarang::count();
 
-        $totalRuangan = Ruangan::count();
+        $totalRuangan = ruangan::count();
 
         $stokMenipis = Barang::where('stok', '<=', 5)->count();
 
