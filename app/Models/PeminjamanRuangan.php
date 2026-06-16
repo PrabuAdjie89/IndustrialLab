@@ -32,7 +32,7 @@ class PeminjamanRuangan extends Model
 
     public function ruangan()
     {
-        return $this->belongsTo(Ruangan::class, 'ruangan_id', 'id_ruangan');
+        return $this->belongsTo(ruangan::class, 'ruangan_id', 'id_ruangan');
     }
 
     /**

@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\PeminjamanRuangan;
-use App\Models\Ruangan;
+use App\Models\ruangan;
 use Carbon\Carbon;
 use App\Http\Requests\storePeminjamanRuanganReq;
 use App\Http\Requests\updatePeminjamanRuanganReq;
@@ -19,7 +19,7 @@ class PeminjamanRuangController extends Controller
         $bulan = request('bulan', now()->month);
         $tahun = request('tahun', now()->year);
 
-        $ruangans = Ruangan::orderBy('nama_ruangan')->get();
+        $ruangans = ruangan::orderBy('nama_ruangan')->get();
 
         $jumlahHari = Carbon::create(
             $tahun,
@@ -51,7 +51,7 @@ class PeminjamanRuangController extends Controller
             ->paginate($perPage)
             ->appends(request()->query());
 
-        $ruangans = Ruangan::all();
+        $ruangans = ruangan::all();
 
         return view('peminjaman-ruang.index', compact('pageTitle', 'peminjamanRuang', 'ruangans', 'jadwal', 'bulan', 'tahun', 'jumlahHari'));
     }
@@ -62,7 +62,7 @@ class PeminjamanRuangController extends Controller
         $bulan = request('bulan', now()->month);
         $tahun = request('tahun', now()->year);
 
-        $ruangans = Ruangan::orderBy('nama_ruangan')->get();
+        $ruangans = ruangan::orderBy('nama_ruangan')->get();
 
         $jumlahHari = Carbon::create(
             $tahun,
