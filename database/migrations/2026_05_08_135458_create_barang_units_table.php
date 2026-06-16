@@ -1,0 +1,44 @@
+<?php
+
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+
+return new class extends Migration
+{
+    /**
+     * Run the migrations.
+     */
+    public function up(): void
+    {
+        Schema::create('barang_units', function (Blueprint $table) {
+
+            $table->id();
+
+            $table->foreignId('barang_id')
+                ->constrained('barangs')
+                ->cascadeOnDelete();
+
+            $table->string('kode_unit')->unique();
+
+            $table->enum('status', [
+                'tersedia',
+                'dipinjam',
+                'rusak',
+                'maintenance'
+            ])->default('tersedia');
+
+            $table->string('kondisi')->default('Baik');
+
+            $table->timestamps();
+        });
+    }
+
+    /**
+     * Reverse the migrations.
+     */
+    public function down(): void
+    {
+        Schema::dropIfExists('barang_units');
+    }
+};

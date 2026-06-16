@@ -1,0 +1,542 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>NOAH - Tak Lagi Sama (Aurora Visualizer)</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@1,400;1,600&family=Montserrat:wght@300;500&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --primary-glow: rgba(255, 255, 255, 0.8);
+            --bg-color: #020205;
+        }
+
+        body {
+            margin: 0;
+            overflow: hidden;
+            background: var(--bg-color);
+            color: white;
+            font-family: 'Montserrat', sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            user-select: none;
+        }
+
+        body::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            z-index: 2;
+            background: radial-gradient(circle at center, transparent 50%, rgba(0,0,0,0.8) 100%);
+            pointer-events: none;
+        }
+
+        #canvas-bg {
+            position: absolute;
+            top: 0;
+            left: 0;
+            z-index: 1;
+        }
+
+        /* === CONTAINER LIRIK === */
+        #lyrics-container {
+            z-index: 10;
+            text-align: center;
+            width: 85%;
+            position: relative;
+            /* Flexbox untuk centering tapi wrap text */
+            display: flex;
+            flex-direction: column; 
+            align-items: center;
+            justify-content: center;
+            min-height: 200px;
+        }
+
+        /* === ANIMASI PER HURUF (ESTETIK BARU) === */
+        .lyric-line {
+            font-family: 'Cormorant Garamond', serif;
+            font-style: italic;
+            font-size: 3.5rem; /* Ukuran font */
+            font-weight: 600;
+            color: rgba(255, 245, 255, 0.95);
+            line-height: 1.1;
+            display: flex;
+            flex-wrap: wrap; /* Supaya kalau panjang dia turun ke bawah */
+            justify-content: center;
+            gap: 0.1rem; /* Jarak antar huruf sedikit */
+            perspective: 1000px; /* Untuk efek 3D */
+        }
+
+        /* Span untuk setiap huruf */
+        .char {
+            display: inline-block;
+            opacity: 0;
+            filter: blur(15px);
+            transform: translateY(40px) rotateX(45deg); /* Posisi Awal: Bawah & Miring */
+            transition: all 0.8s cubic-bezier(0.2, 1, 0.3, 1); /* Easing halus */
+            text-shadow: 0 0 10px rgba(255,255,255,0);
+            white-space: pre; /* Menjaga spasi tetap ada */
+        }
+
+        /* State Masuk (Visible) */
+        .char.in {
+            opacity: 1;
+            filter: blur(0px);
+            transform: translateY(0) rotateX(0deg);
+            text-shadow: 0 0 20px rgba(255,255,255,0.6);
+        }
+
+        /* State Keluar (Exit) - Menguap ke atas */
+        .char.out {
+            opacity: 0;
+            filter: blur(20px);
+            transform: translateY(-60px) scale(1.2); /* Naik ke atas dan membesar */
+            transition: all 0.6s ease-in; /* Lebih cepat saat keluar */
+        }
+
+        /* Responsif untuk HP */
+        @media (max-width: 768px) {
+            .lyric-line { font-size: 2rem; }
+        }
+
+        /* === CONTROLS (SAMA) === */
+        .controls-container {
+            position: absolute;
+            top: 30px;
+            right: 30px;
+            z-index: 50;
+            width: 220px;
+            background: rgba(255, 255, 255, 0.05);
+            padding: 15px;
+            border-radius: 20px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            opacity: 0;
+            transform: translateY(-30px);
+            transition: all 1s ease;
+        }
+
+        .controls-container.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .buttons-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .btn-group { display: flex; gap: 10px; }
+
+        .btn-control {
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.15);
+            color: rgba(255,255,255,0.9);
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+        }
+
+        .btn-control:hover {
+            background: white;
+            color: var(--bg-color);
+            transform: scale(1.1);
+        }
+
+        .time-display {
+            font-size: 0.7rem;
+            color: rgba(255,255,255,0.6);
+            font-weight: 500;
+        }
+
+        .progress-area { width: 100%; display: flex; align-items: center; }
+
+        input[type=range] {
+            -webkit-appearance: none;
+            width: 100%;
+            height: 4px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 2px;
+            outline: none;
+            cursor: pointer;
+        }
+
+        input[type=range]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            height: 10px;
+            width: 10px;
+            border-radius: 50%;
+            background: #fff;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        input[type=range]:hover::-webkit-slider-thumb {
+            transform: scale(1.3);
+        }
+
+        #start-overlay {
+            position: absolute;
+            z-index: 100;
+            inset: 0;
+            background: var(--bg-color);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            transition: opacity 1.2s ease-out;
+        }
+
+        #start-overlay h2 {
+            font-family: 'Cormorant Garamond', serif;
+            font-weight: 400;
+            font-style: italic;
+            letter-spacing: 4px;
+            font-size: 1.8rem;
+            color: white;
+            margin-bottom: 40px;
+        }
+
+        #start-btn {
+            padding: 15px 50px;
+            background: transparent;
+            border: 1px solid rgba(255,255,255,0.4);
+            color: white;
+            border-radius: 50px;
+            cursor: pointer;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            font-size: 0.8rem;
+            font-family: 'Montserrat', sans-serif;
+            transition: 0.5s;
+        }
+
+        #start-btn:hover {
+            background: rgba(255,255,255,0.1);
+            border-color: white;
+            letter-spacing: 5px;
+        }
+    </style>
+</head>
+<body>
+
+    <canvas id="canvas-bg"></canvas>
+
+    <div id="lyrics-container">
+        <div id="current-lyric" class="lyric-line"></div>
+    </div>
+
+    <div id="start-overlay">
+        <h2>Noah - Tak Lagi Sama</h2>
+        <button id="start-btn" onclick="startExperience()">Mulai</button>
+    </div>
+
+    <div class="controls-container" id="controls">
+        <div class="buttons-row">
+            <div class="btn-group">
+                <button class="btn-control" onclick="togglePlay()" id="play-pause-btn" title="Play/Pause">&#9658;</button>
+                <button class="btn-control" onclick="replayMusic()" title="Replay">&#8635;</button>
+            </div>
+            <div class="time-display">
+                <span id="curr-time">0:00</span> / <span id="dur-time">0:00</span>
+            </div>
+        </div>
+        <div class="progress-area">
+            <input type="range" id="progress-bar" value="0" min="0" step="0.1" oninput="seekAudio()" />
+        </div>
+    </div>
+
+    <audio id="audio-player" src="NOAH - TAK LAGI SAMA (ALTERNATIVE POP COVER AI VIRAL TIKTOK) (2).wav"></audio>
+
+    <script>
+        // --- DATA LIRIK ---
+        const lyricData = [
+            { time: 21.5, text: "Cerita ini tak lagi sama" },
+            { time: 27.5, text: "Meski hatimu selalu di sini" },
+            { time: 31.5, text: "Mengertilah bahwa ku tak berubah" },
+            { time: 36.5, text: "Lihat aku dari sisi yang lain" },
+            { time: 41.0, text: "Bersandar padaku" },
+            { time: 46.0, text: "Rasakan hatiku" },
+            { time: 51.0, text: "Bersandar padaku" },
+            { time: 57.0, text: "Dan diriku bukanlah aku" },
+            { time: 62.0, text: "Tanpa kamu tuk memelukku" },
+            { time: 68.0, text: "Kau melengkapiku" },
+            { time: 73.0, text: "Kau sempurnakan aku" },
+            { time: 80.5, text: "Waktu yang telah kita lalui" },
+            { time: 85.5, text: "Buatmu jadi lebih berarti" },
+            { time: 90.5, text: "Luluhkan kerasnya dinding hati" },
+            { time: 95.5, text: "Engkaulah satu yang aku cari" },
+            { time: 100.5, text: "Bersandar padaku" },
+            { time: 105.5, text: "Rasakan hatiku" },
+            { time: 110.5, text: "Bersandar padaku..." },
+            { time: 116.5, text: "Dan diriku bukanlah aku" },
+            { time: 121.5, text: "Tanpa kamu tuk memelukku" },
+            { time: 127.0, text: "Kau melengkapiku" },
+            { time: 131.5, text: "Kau sempurnakan aku" },
+            { time: 136.5, text: "Dan diriku bukanlah aku" },
+            { time: 141.5, text: "Tanpa kamu menemaniku" },
+            { time: 146.5, text: "Kau menenangkanku" },
+            { time: 151.5, text: "Kau melegakan aku" },
+            { time: 159.5, text: "Ohhh~~ yeahh~~~" },
+            { time: 166.0, text: "Dan diriku bukanlah aku..." },
+            { time: 171.0, text: "Tanpa kamu tuk memelukku" },
+            { time: 176.0, text: "Kau melengkapiku" },
+            { time: 181.0, text: "Kau sempurnakan aku..." },
+            { time: 186.0, text: "Dan diriku bukanlah aku..." },
+            { time: 191.0, text: "Tanpa kamu menemaniku" },
+            { time: 195.0, text: "Kau menenangkanku" },
+            { time: 201.0, text: "Kau melegakan aku..." }
+        ];
+
+        // --- PLAYER LOGIC ---
+        const audio = document.getElementById('audio-player');
+        const lyricEl = document.getElementById('current-lyric');
+        const startOverlay = document.getElementById('start-overlay');
+        const controls = document.getElementById('controls');
+        const playPauseBtn = document.getElementById('play-pause-btn');
+        const progressBar = document.getElementById('progress-bar');
+        const currTimeText = document.getElementById('curr-time');
+        const durTimeText = document.getElementById('dur-time');
+
+        let currentIndex = -1;
+
+        function startExperience() {
+            audio.play().then(() => {
+                startOverlay.style.opacity = '0';
+                setTimeout(() => (startOverlay.style.display = 'none'), 1200);
+                controls.classList.add('visible');
+                updatePlayBtn();
+            }).catch(() => alert("File audio tidak ditemukan!"));
+        }
+
+        function togglePlay() {
+            audio.paused ? audio.play() : audio.pause();
+            updatePlayBtn();
+        }
+
+        function updatePlayBtn() {
+            playPauseBtn.innerHTML = audio.paused ? '&#9658;' : '&#10074;&#10074;';
+        }
+
+        function replayMusic() {
+            audio.currentTime = 0;
+            resetLyricState();
+            if (audio.paused) audio.play();
+            updatePlayBtn();
+        }
+
+        function seekAudio() { audio.currentTime = progressBar.value; }
+
+        function resetLyricState() {
+            currentIndex = -1;
+            lyricEl.innerHTML = ''; // Clear content
+        }
+
+        audio.addEventListener('timeupdate', () => {
+            const time = audio.currentTime;
+            if (!audio.paused) progressBar.value = time;
+            currTimeText.textContent = formatTime(time);
+
+            let activeIdx = -1;
+            for (let i = 0; i < lyricData.length; i++) {
+                if (time >= lyricData[i].time) activeIdx = i;
+                else break;
+            }
+
+            if (activeIdx !== currentIndex) {
+                if (activeIdx < currentIndex) {
+                    resetLyricState();
+                    currentIndex = activeIdx - 1;
+                }
+                changeLyric(activeIdx);
+                currentIndex = activeIdx;
+            }
+        });
+
+        audio.addEventListener('loadedmetadata', () => {
+            progressBar.max = audio.duration;
+            durTimeText.textContent = formatTime(audio.duration);
+        });
+
+        function formatTime(sec) {
+            if(isNaN(sec)) return "0:00";
+            const min = Math.floor(sec / 60);
+            const s = Math.floor(sec % 60);
+            return `${min}:${s < 10 ? '0' : ''}${s}`;
+        }
+
+        // --- FUNGSI GANTI LIRIK (LOGIKA BARU UNTUK PECAH HURUF) ---
+        function changeLyric(index) {
+            if (index === -1) { 
+                // Jika tidak ada lirik aktif, hilangkan lirik sebelumnya dengan gaya
+                const oldChars = lyricEl.querySelectorAll('.char');
+                oldChars.forEach((char, i) => {
+                    setTimeout(() => {
+                        char.classList.remove('in');
+                        char.classList.add('out');
+                    }, i * 30);
+                });
+                return; 
+            }
+
+            // 1. Animasi KELUAR lirik lama (jika ada)
+            const oldChars = lyricEl.querySelectorAll('.char');
+            if (oldChars.length > 0) {
+                // Exit stagger (acak atau urut)
+                oldChars.forEach((char, i) => {
+                    // Delay acak sedikit biar lebih organic saat hilang
+                    setTimeout(() => {
+                        char.classList.remove('in');
+                        char.classList.add('out');
+                    }, i * 20); // 20ms per huruf
+                });
+
+                // Tunggu animasi keluar selesai baru ganti teks
+                setTimeout(() => {
+                    injectNewLyric(lyricData[index].text);
+                }, 600); // Sesuaikan dengan durasi animasi exit CSS
+            } else {
+                // Jika belum ada lirik, langsung masuk
+                injectNewLyric(lyricData[index].text);
+            }
+        }
+
+        function injectNewLyric(text) {
+            lyricEl.innerHTML = ''; // Kosongkan container
+            
+            // Pecah string jadi array karakter
+            const chars = text.split('');
+            
+            chars.forEach((char, i) => {
+                const span = document.createElement('span');
+                span.textContent = char;
+                span.classList.add('char');
+                lyricEl.appendChild(span);
+
+                // Animasi MASUK (Staggered)
+                // Kita pakai setTimeout di JS untuk menambahkan class 'in'
+                // ini memberi kontrol lebih presisi daripada animation-delay di CSS
+                setTimeout(() => {
+                    span.classList.add('in');
+                }, 50 + (i * 40)); // Base delay 50ms + 40ms per huruf berikutnya
+            });
+        }
+
+        /* =============================
+           3. BACKGROUND: AURORA & STARS (Sama)
+        ============================= */
+        const canvas = document.getElementById('canvas-bg');
+        const ctx = canvas.getContext('2d');
+        let width, height;
+        let auroraLights = [];
+        let stars = [];
+
+        function resize() {
+            width = canvas.width = window.innerWidth;
+            height = canvas.height = window.innerHeight;
+            initBackground();
+        }
+        window.addEventListener('resize', resize);
+
+        class AuroraLight {
+            constructor() {
+                this.x = Math.random() * width;
+                this.y = Math.random() * height * 0.6; 
+                this.radius = Math.random() * width * 0.4 + 200; 
+                const colors = [
+                    [64, 224, 208], [75, 0, 130], [0, 191, 255], [123, 104, 238]
+                ];
+                this.rgb = colors[Math.floor(Math.random() * colors.length)];
+                this.opacity = Math.random() * 0.3 + 0.1;
+                this.speedX = (Math.random() - 0.5) * 0.2;
+                this.speedY = (Math.random() - 0.5) * 0.1;
+                this.t = Math.random() * 100; 
+            }
+
+            update() {
+                this.x += this.speedX;
+                this.y += this.speedY;
+                this.t += 0.005;
+                this.currentRadius = this.radius + Math.sin(this.t) * 50;
+                if (this.x < -this.currentRadius) this.x = width + this.currentRadius;
+                if (this.x > width + this.currentRadius) this.x = -this.currentRadius;
+            }
+
+            draw() {
+                let gradient = ctx.createRadialGradient(this.x, this.y, 0, this.x, this.y, this.currentRadius);
+                gradient.addColorStop(0, `rgba(${this.rgb[0]}, ${this.rgb[1]}, ${this.rgb[2]}, ${this.opacity})`);
+                gradient.addColorStop(1, 'rgba(0,0,0,0)');
+                ctx.fillStyle = gradient;
+                ctx.globalCompositeOperation = 'lighter'; 
+                ctx.fillRect(0, 0, width, height);
+            }
+        }
+
+        class Star {
+            constructor() {
+                this.x = Math.random() * width;
+                this.y = Math.random() * height;
+                this.size = Math.random() * 1.5;
+                this.blinkSpeed = Math.random() * 0.02 + 0.005;
+                this.alpha = Math.random();
+            }
+            update() {
+                this.alpha += this.blinkSpeed;
+                if(this.alpha > 1 || this.alpha < 0.2) this.blinkSpeed *= -1;
+            }
+            draw() {
+                ctx.globalCompositeOperation = 'source-over'; 
+                ctx.fillStyle = `rgba(255, 255, 255, ${this.alpha})`;
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                ctx.fill();
+            }
+        }
+
+        function initBackground() {
+            auroraLights = [];
+            stars = [];
+            for (let i = 0; i < 8; i++) auroraLights.push(new AuroraLight());
+            for (let i = 0; i < 200; i++) stars.push(new Star());
+        }
+
+        function animate() {
+            ctx.globalCompositeOperation = 'source-over';
+            let bgGradient = ctx.createLinearGradient(0, 0, 0, height);
+            bgGradient.addColorStop(0, "#050a14"); 
+            bgGradient.addColorStop(1, "#020205"); 
+            ctx.fillStyle = bgGradient;
+            ctx.fillRect(0, 0, width, height);
+
+            for (let light of auroraLights) {
+                light.update();
+                light.draw();
+            }
+            for (let star of stars) {
+                star.update();
+                star.draw();
+            }
+            requestAnimationFrame(animate);
+        }
+
+        resize();
+        animate();
+    </script>
+</body>
+</html>
