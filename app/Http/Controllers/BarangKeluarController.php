@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Barang;
 use App\Models\BarangKeluar;
 use App\Models\BarangUnit;
+use App\Models\BarangKeluarUnit;
 use App\Http\Requests\StoreBarangKeluarReq;
 use App\Http\Requests\UpdateBarangKeluarReq;
 use App\Exports\BarangKeluarExport;
@@ -23,7 +24,7 @@ class BarangKeluarController extends Controller
         $search = request()->query('search');
 
         $query = BarangKeluar::with(
-            'barang:id,kode_barang,nama_barang,stok'
+            'barang:id,kode_barang,nama_barang,stok','units'
         );
 
         if ($search) {
@@ -59,11 +60,8 @@ class BarangKeluarController extends Controller
     {
         $request->validate([
             'barang_id' => 'required|exists:barangs,id',
-
             'unit_ids' => 'required|array|min:1',
-
             'unit_ids.*' => 'exists:barang_units,id',
-
             'tanggal_keluar' => 'required|date',
         ]);
 
@@ -71,90 +69,123 @@ class BarangKeluarController extends Controller
 
         $barangKeluar = BarangKeluar::create([
             'barang_id'      => $request->barang_id,
-
             'jumlah'         => $jumlah,
-
             'tanggal_keluar' => $request->tanggal_keluar,
-
             'keterangan'     => $request->keterangan,
         ]);
 
-        BarangUnit::whereIn('id', $request->unit_ids)
-            ->delete();
+        $units = BarangUnit::whereIn(
+            'id',
+            $request->unit_ids
+        )->get();
 
-        $barang = Barang::find($request->barang_id);
+        foreach ($units as $unit) {
 
-        $barang->update([
-            'stok' => $barang->units()->count()
-        ]);
+            BarangKeluarUnit::create([
 
-        toast()->success('Barang keluar berhasil ditambahkan');
+                'barang_keluar_id' => $barangKeluar->id,
 
-        return redirect()->route('master-data.barang-keluar.index');
-    }
+                'barang_unit_id' => $unit->id,
 
-    public function update(UpdateBarangKeluarReq $request,BarangKeluar $barangKeluar)
-    {
-        $request->validate([
+                'kode_unit' => $unit->kode_unit,
 
-            'barang_id' => [
-                'required',
-                'exists:barangs,id'
-            ],
-
-            'unit_ids' => [
-                'required',
-                'array',
-                'min:1'
-            ],
-
-            'unit_ids.*' => [
-                'exists:barang_units,id'
-            ],
-
-            'tanggal_keluar' => [
-                'required',
-                'date'
-            ],
-
-        ]);
-        $barangLama = $barangKeluar->barang;
-        $lastUrut = BarangUnit::getLastUrut($barangLama->id);
-        for ($i = 1; $i <= $barangKeluar->jumlah; $i++) {
-
-            $nomorUrut = $lastUrut + $i;
-            BarangUnit::create([
-                'barang_id' => $barangLama->id,
-                'kode_unit' => BarangUnit::generateKodeUnit(
-                    $barangLama->kode_barang,
-                    $nomorUrut
-                ),
-                'status' => 'tersedia',
-                'kondisi' => 'Baik',
             ]);
 
         }
 
-        $jumlah = count($request->unit_ids);
-        $barangKeluar->update([
-            'barang_id' => $request->barang_id,
-            'jumlah' => $jumlah,
-            'tanggal_keluar' => $request->tanggal_keluar,
-            'keterangan' => $request->keterangan,
-
+        BarangUnit::whereIn(
+            'id',
+            $request->unit_ids
+        )->update([
+            'status' => 'keluar'
         ]);
+
+        $barang = Barang::find(
+            $request->barang_id
+        );
+
+        $barang->update([
+            'stok' => $barang->units()
+                ->where('status', '!=', 'keluar')
+                ->count()
+        ]);
+
+        toast()->success(
+            'Barang keluar berhasil ditambahkan'
+        );
+
+        return redirect()->route(
+            'master-data.barang-keluar.index'
+        );
+    }
+
+    public function update( UpdateBarangKeluarReq $request, BarangKeluar $barangKeluar)
+    {
+        $oldUnitIds = $barangKeluar
+            ->units
+            ->pluck('barang_unit_id');
+
+        BarangUnit::whereIn(
+            'id',
+            $oldUnitIds
+        )->update([
+            'status' => 'tersedia'
+        ]);
+
+        $barangKeluar->units()->delete();
+
+        $units = BarangUnit::whereIn(
+            'id',
+            $request->unit_ids
+        )->get();
+
+        foreach ($units as $unit) {
+
+            BarangKeluarUnit::create([
+
+                'barang_keluar_id' => $barangKeluar->id,
+
+                'barang_unit_id' => $unit->id,
+
+                'kode_unit' => $unit->kode_unit,
+
+            ]);
+
+        }
 
         BarangUnit::whereIn(
             'id',
             $request->unit_ids
-        )->delete();
-        $barangBaru = Barang::find($request->barang_id);
-        $barangBaru->update([
-            'stok' => $barangBaru->units()->count()
+        )->update([
+            'status' => 'keluar'
         ]);
+
+        $barangKeluar->update([
+
+            'barang_id' => $request->barang_id,
+
+            'jumlah' => count($request->unit_ids),
+
+            'tanggal_keluar' => $request->tanggal_keluar,
+
+            'keterangan' => $request->keterangan,
+
+        ]);
+
+        $barang = Barang::find(
+            $request->barang_id
+        );
+
+        $barang->update([
+            'stok' => $barang->units()
+                ->where('status', '!=', 'keluar')
+                ->count()
+        ]);
+
         toast()->success(
             'Barang keluar berhasil diperbarui'
         );
+
         return redirect()->route(
             'master-data.barang-keluar.index'
         );
@@ -224,37 +255,33 @@ class BarangKeluarController extends Controller
 
     public function destroy(BarangKeluar $barangKeluar)
     {
-        $barang = $barangKeluar->barang;
+        $unitIds = $barangKeluar
+            ->units
+            ->pluck('barang_unit_id');
 
-        $lastUrut = BarangUnit::getLastUrut($barang->id);
-
-        for ($i = 1; $i <= $barangKeluar->jumlah; $i++) {
-
-            $nomorUrut = $lastUrut + $i;
-
-            BarangUnit::create([
-
-                'barang_id' => $barang->id,
-
-                'kode_unit' => BarangUnit::generateKodeUnit(
-                    $barang->kode_barang,
-                    $nomorUrut
-                ),
-
-                'status' => 'tersedia',
-
-                'kondisi' => 'Baik',
-            ]);
-        }
-
-        $barang->update([
-            'stok' => $barang->units()->count()
+        BarangUnit::whereIn(
+            'id',
+            $unitIds
+        )->update([
+            'status' => 'tersedia'
         ]);
+
+        $barang = $barangKeluar->barang;
 
         $barangKeluar->delete();
 
-        toast()->success('Data barang keluar berhasil dihapus');
+        $barang->update([
+            'stok' => $barang->units()
+                ->where('status', '!=', 'keluar')
+                ->count()
+        ]);
 
-        return redirect()->route('master-data.barang-keluar.index');
+        toast()->success(
+            'Data barang keluar berhasil dihapus'
+        );
+
+        return redirect()->route(
+            'master-data.barang-keluar.index'
+        );
     }
 }

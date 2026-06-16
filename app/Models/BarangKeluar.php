@@ -22,4 +22,11 @@ class BarangKeluar extends Model
     {
         return $this->belongsTo(Barang::class);
     }
+
+    public function units()
+    {
+        return $this->hasMany(
+            BarangKeluarUnit::class
+        );
+    }
 }

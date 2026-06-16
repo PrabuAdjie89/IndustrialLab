@@ -4,11 +4,12 @@
 
 @section('content')
 
-<div class="card">
+<div class="card shadow-sm border-0">
 
-    <div class="card-header d-flex justify-content-between align-items-center">
+    {{-- HEADER --}}
+    <div class="card-header bg-white d-flex justify-content-between align-items-center flex-wrap gap-2">
 
-        <h4 class="card-title mb-0">
+        <h4 class="card-title mb-0 fw-bold">
             Detail Barang
         </h4>
 
@@ -16,61 +17,136 @@
 
             @if(auth()->user()->role == 'laboran')
 
-                <a href="{{ route('master-data.barang.print-qr', $barang->id) }}" class="btn btn-dark btn-sm" target="_blank">
-                    Cetak QR
+                <a
+                    href="{{ route('master-data.barang.print-qr', $barang->id) }}"
+                    class="btn btn-dark btn-sm"
+                    target="_blank"
+                >
+                    <i class="bi bi-qr-code"></i> Cetak QR
                 </a>
 
             @endif
 
-            <a href="{{ route('master-data.barang.index') }}" class="btn btn-secondary btn-sm">
-                Kembali
+            <a
+                href="{{ route('master-data.barang.index') }}"
+                class="btn btn-secondary btn-sm"
+            >
+                <i class="bi bi-arrow-left"></i> Kembali
             </a>
 
         </div>
 
     </div>
 
-    <div class="card-body py-4">
+    <div class="card-body">
 
-        <div class="row">
+        <div class="row g-4">
 
-            {{-- GAMBAR BARANG --}}
-            <div class="col-md-4 text-center mb-4">
+            {{-- GAMBAR --}}
+            <div class="col-lg-4">
 
-                @if ( $barang->gambar)
+                <div class="border rounded p-3 text-center h-100 bg-light">
 
-                    <img src="{{ asset('storage/' . $barang->gambar) }}" alt="{{ $barang->nama_barang }}"
-                     class="img-fluid rounded shadow" style="max-height: 300px;">
+                    @if($barang->gambar)
 
-                @else
+                        <img
+                            src="{{ asset('storage/' . $barang->gambar) }}"
+                            alt="{{ $barang->nama_barang }}"
+                            class="img-fluid rounded shadow-sm"
+                            style="max-height: 300px; object-fit: cover;"
+                        >
 
-                    <div class="border rounded p-5 text-muted">
-                        Tidak ada gambar
-                    </div>
+                    @else
 
-                @endif
+                        <div
+                            class="d-flex align-items-center justify-content-center h-100 text-muted"
+                            style="min-height: 300px;"
+                        >
+                            Tidak ada gambar
+                        </div>
+
+                    @endif
+
+                </div>
 
             </div>
 
-            {{-- DETAIL BARANG --}}
-            <div class="col-md-8">
+            {{-- DETAIL --}}
+            <div class="col-lg-8">
 
-                <x-detail-item label="Kode Barang" value="{{ $barang->kode_barang }}"/>
-                <x-detail-item label="Nama Barang" value="{{ $barang->nama_barang }}"/>
-                <x-detail-item label="Kategori" value="{{ $barang->kategori->nama_kategori ?? '-' }}"/>
+                <div class="row">
 
-                <x-detail-item label="Stok" value="{{ $barang->stok }}"/>
-                <x-detail-item label="Status Peminjaman" value="{{ $barang->status_label }}"/>
+                    <div class="col-md-6 mb-3">
 
-                <div class="mb-3">
+                        <label class="fw-bold text-muted small">
+                            Kode Barang
+                        </label>
 
-                    <label class="fw-bold">
-                        Deskripsi
-                    </label>
+                        <div class="fs-6">
+                            {{ $barang->kode_barang }}
+                        </div>
 
-                    <p class="mt-1 mb-0">
-                        {{ $barang->deskripsi_barang ?? '-' }}
-                    </p>
+                    </div>
+
+                    <div class="col-md-6 mb-3">
+
+                        <label class="fw-bold text-muted small">
+                            Nama Barang
+                        </label>
+
+                        <div class="fs-6">
+                            {{ $barang->nama_barang }}
+                        </div>
+
+                    </div>
+
+                    <div class="col-md-6 mb-3">
+
+                        <label class="fw-bold text-muted small">
+                            Kategori
+                        </label>
+
+                        <div class="fs-6">
+                            {{ $barang->kategori->nama_kategori ?? '-' }}
+                        </div>
+
+                    </div>
+
+                    <div class="col-md-6 mb-3">
+
+                        <label class="fw-bold text-muted small">
+                            Stok
+                        </label>
+
+                        <div class="fs-6">
+                            {{ $barang->stok }}
+                        </div>
+
+                    </div>
+
+                    <div class="col-md-6 mb-3">
+
+                        <label class="fw-bold text-muted small">
+                            Status Peminjaman
+                        </label>
+
+                        <div class="fs-6">
+                            {!! $barang->status_label !!}
+                        </div>
+
+                    </div>
+
+                    <div class="col-12 mt-2">
+
+                        <label class="fw-bold text-muted small">
+                            Deskripsi
+                        </label>
+
+                        <div class="border rounded p-3 bg-light mt-1">
+                            {{ $barang->deskripsi_barang ?? '-' }}
+                        </div>
+
+                    </div>
 
                 </div>
 
@@ -78,24 +154,45 @@
 
         </div>
 
-        {{-- DATA UNIT BARANG --}}
+        {{-- DATA UNIT --}}
         <div class="mt-5">
 
-            <h5 class="fw-bold mb-3">
-                Data Unit Barang
-            </h5>
+            <div class="d-flex justify-content-between align-items-center mb-3">
+
+                <h5 class="fw-bold mb-0">
+                    Data Unit Barang
+                </h5>
+
+                <span class="badge bg-dark">
+                    Total Unit: {{ $barang->units->count() }}
+                </span>
+
+            </div>
 
             <div class="table-responsive">
 
                 <table class="table table-bordered table-hover align-middle">
 
-                    <thead class="table-dark">
+                    <thead class="table-dark text-center">
 
                         <tr>
-                            <th width="5%">No</th>
-                            <th>Kode Unit</th>
-                            <th width="30%">Status & Kondisi</th>
-                            <th width="20%">Kondisi Saat Ini</th>
+
+                            <th width="5%">
+                                No
+                            </th>
+
+                            <th>
+                                Kode Unit
+                            </th>
+
+                            <th width="30%">
+                                Status
+                            </th>
+
+                            <th width="20%">
+                                Kondisi
+                            </th>
+
                         </tr>
 
                     </thead>
@@ -106,7 +203,7 @@
 
                             <tr>
 
-                                <td>
+                                <td class="text-center">
                                     {{ $loop->iteration }}
                                 </td>
 
@@ -114,71 +211,116 @@
                                     {{ $unit->kode_unit }}
                                 </td>
 
-                                {{-- STATUS & KONDISI --}}
+                                {{-- STATUS --}}
                                 <td>
 
                                     @if(auth()->user()->role == 'laboran')
 
-                                        <form
-                                            action="{{ route('master-data.barang.update-status', $unit->id) }}"
-                                            method="POST"
-                                        >
+                                        @if($unit->status == 'keluar')
 
-                                            @csrf
-                                            @method('PATCH')
+                                            <span class="badge bg-secondary">
+                                                Keluar
+                                            </span>
 
-                                            <div class="d-flex flex-column gap-2">
+                                        @else
 
-                                                {{-- STATUS --}}
-                                                <select name="status" class="form-select form-select-sm status-select">
+                                            <form
+                                                action="{{ route('master-data.barang.update-status', $unit->id) }}"
+                                                method="POST"
+                                            >
 
-                                                    <option value="tersedia" {{ $unit->status == 'tersedia' ? 'selected' : '' }}>
-                                                        Tersedia
-                                                    </option>
+                                                @csrf
+                                                @method('PATCH')
 
-                                                    <option value="rusak" {{ $unit->status == 'rusak' ? 'selected' : '' }}>
-                                                        Rusak
-                                                    </option>
+                                                <div class="d-flex flex-column gap-2">
 
-                                                    <option value="maintenance" {{ $unit->status == 'maintenance' ? 'selected' : '' }}>
-                                                        Maintenance
-                                                    </option>
+                                                    {{-- STATUS --}}
+                                                    <select
+                                                        name="status"
+                                                        class="form-select form-select-sm"
+                                                    >
 
-                                                </select>
+                                                        <option
+                                                            value="tersedia"
+                                                            {{ $unit->status == 'tersedia' ? 'selected' : '' }}
+                                                        >
+                                                            Tersedia
+                                                        </option>
 
-                                                {{-- KONDISI --}}
-                                                <select name="kondisi" class="form-select form-select-sm kondisi-select">
+                                                        <option
+                                                            value="rusak"
+                                                            {{ $unit->status == 'rusak' ? 'selected' : '' }}
+                                                        >
+                                                            Rusak
+                                                        </option>
 
-                                                    <option value="Baik" {{ $unit->kondisi == 'Baik' ? 'selected' : '' }}>
-                                                        Baik
-                                                    </option>
+                                                        <option
+                                                            value="maintenance"
+                                                            {{ $unit->status == 'maintenance' ? 'selected' : '' }}
+                                                        >
+                                                            Maintenance
+                                                        </option>
 
-                                                    <option value="Rusak Ringan" {{ $unit->kondisi == 'Rusak Ringan' ? 'selected' : '' }}>
-                                                        Rusak Ringan
-                                                    </option>
+                                                    </select>
 
-                                                    <option value="Rusak Sedang" {{ $unit->kondisi == 'Rusak Sedang' ? 'selected' : '' }}>
-                                                        Rusak Sedang
-                                                    </option>
+                                                    {{-- KONDISI --}}
+                                                    <select
+                                                        name="kondisi"
+                                                        class="form-select form-select-sm"
+                                                    >
 
-                                                    <option value="Rusak Berat" {{ $unit->kondisi == 'Rusak Berat' ? 'selected' : '' }}>
-                                                        Rusak Berat
-                                                    </option>
-                                                    <option value="Perlu Maintenance" {{ $unit->kondisi == 'Perlu Maintenance' ? 'selected' : '' }}>
-                                                        Perlu Maintenance
-                                                    </option>
-                                                </select>
+                                                        <option
+                                                            value="Baik"
+                                                            {{ $unit->kondisi == 'Baik' ? 'selected' : '' }}
+                                                        >
+                                                            Baik
+                                                        </option>
 
-                                                <button type="submit" class="btn btn-dark btn-sm">
-                                                    Simpan
-                                                </button>
-                                            </div>
+                                                        <option
+                                                            value="Rusak Ringan"
+                                                            {{ $unit->kondisi == 'Rusak Ringan' ? 'selected' : '' }}
+                                                        >
+                                                            Rusak Ringan
+                                                        </option>
 
-                                        </form>
+                                                        <option
+                                                            value="Rusak Sedang"
+                                                            {{ $unit->kondisi == 'Rusak Sedang' ? 'selected' : '' }}
+                                                        >
+                                                            Rusak Sedang
+                                                        </option>
+
+                                                        <option
+                                                            value="Rusak Berat"
+                                                            {{ $unit->kondisi == 'Rusak Berat' ? 'selected' : '' }}
+                                                        >
+                                                            Rusak Berat
+                                                        </option>
+
+                                                        <option
+                                                            value="Perlu Maintenance"
+                                                            {{ $unit->kondisi == 'Perlu Maintenance' ? 'selected' : '' }}
+                                                        >
+                                                            Perlu Maintenance
+                                                        </option>
+
+                                                    </select>
+
+                                                    <button
+                                                        type="submit"
+                                                        class="btn btn-dark btn-sm"
+                                                    >
+                                                        Simpan
+                                                    </button>
+
+                                                </div>
+
+                                            </form>
+
+                                        @endif
 
                                     @else
 
-                                        {{-- STATUS BADGE --}}
                                         @if($unit->status == 'tersedia')
 
                                             <span class="badge bg-success">
@@ -191,10 +333,16 @@
                                                 Rusak
                                             </span>
 
-                                        @else
+                                        @elseif($unit->status == 'maintenance')
 
                                             <span class="badge bg-warning text-dark">
                                                 Maintenance
+                                            </span>
+
+                                        @elseif($unit->status == 'keluar')
+
+                                            <span class="badge bg-secondary">
+                                                Keluar
                                             </span>
 
                                         @endif
@@ -204,9 +352,13 @@
                                 </td>
 
                                 {{-- KONDISI --}}
-                                <td>
+                                <td class="text-center">
 
-                                    @if($unit->kondisi == 'Baik')
+                                    @if($unit->status == 'keluar')
+
+                                        -
+
+                                    @elseif($unit->kondisi == 'Baik')
 
                                         <span class="badge bg-success">
                                             Baik
@@ -243,7 +395,7 @@
 
                             <tr>
 
-                                <td colspan="4" class="text-center text-muted">
+                                <td colspan="4" class="text-center text-muted py-4">
                                     Tidak ada unit barang
                                 </td>
 

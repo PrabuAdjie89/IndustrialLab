@@ -224,7 +224,7 @@ class BarangController extends Controller
         $request->validate([
             'status' => [
                 'required',
-                'in:tersedia,dipinjam,rusak,maintenance'
+                'in:tersedia,dipinjam,rusak,maintenance,keluar'
             ],
 
             'kondisi' => [

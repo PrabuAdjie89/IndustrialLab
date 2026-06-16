@@ -93,7 +93,7 @@
                                     <div class="unit-group d-none"
                                          data-barang="{{ $item->id }}">
                                         <div class="row">
-                                            @foreach ($item->units->whereIn('status', ['tersedia','rusak']) as $unit)
+                                            @foreach ($item->units->whereIn('status', ['tersedia','rusak','keluar']) as $unit)
                                                 <div class="col-12 col-md-6 mb-2">
                                                     <div class="form-check border rounded p-2">
                                                         <input
@@ -101,7 +101,8 @@
                                                             type="checkbox"
                                                             name="unit_ids[]"
                                                             value="{{ $unit->id }}"
-                                                            id="unit{{ $unit->id }}">
+                                                            id="unit{{ $unit->id }}"
+                                                            {{ in_array($unit->id, $selectedUnits ?? []) ? 'checked' : '' }}>
                                                         <label
                                                             class="form-check-label w-100"
                                                             for="unit{{ $unit->id }}">
