@@ -93,6 +93,10 @@ return [
                 'ses',
                 'postmark',
             ],
+
+        ],
+        'resend' => [
+            'transport' => 'resend',
         ],
     ],
 
