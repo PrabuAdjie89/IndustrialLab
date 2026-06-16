@@ -2,16 +2,29 @@ FROM php:8.3-cli
 
 RUN apt-get update && apt-get install -y \
     git \
+    curl \
     unzip \
     zip \
-    curl \
     libzip-dev \
     libpng-dev \
+    libjpeg62-turbo-dev \
+    libfreetype6-dev \
     libonig-dev \
     libxml2-dev \
     nodejs \
-    npm \
-    && docker-php-ext-install pdo pdo_mysql zip
+    npm
+
+RUN docker-php-ext-configure gd \
+    --with-freetype \
+    --with-jpeg
+
+RUN docker-php-ext-install \
+    pdo \
+    pdo_mysql \
+    zip \
+    gd \
+    bcmath \
+    exif
 
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
@@ -23,10 +36,6 @@ RUN composer install --no-dev --optimize-autoloader
 
 RUN npm install
 RUN npm run build
-
-RUN php artisan config:clear || true
-RUN php artisan route:clear || true
-RUN php artisan view:clear || true
 
 EXPOSE 8080
 
