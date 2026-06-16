@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 use App\Http\Requests\updateKategoriBarangRequest;
-use App\MOdels\KategoriBarang;
+use App\Models\KategoriBarang;
 use Illuminate\Http\Request;
 use App\Http\Requests\StoreKategoriBarangRequest;
 
