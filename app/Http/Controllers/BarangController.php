@@ -43,6 +43,9 @@ class BarangController extends Controller
 
     public function store(storeBarangReq $request)
     {
+
+
+
         DB::beginTransaction();
 
         try {

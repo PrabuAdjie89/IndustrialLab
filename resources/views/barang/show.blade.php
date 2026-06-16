@@ -37,7 +37,7 @@
             {{-- GAMBAR BARANG --}}
             <div class="col-md-4 text-center mb-4">
 
-                @if ($barang->gambar && file_exists(public_path('storage/' . $barang->gambar)))
+                @if ( $barang->gambar)
 
                     <img src="{{ asset('storage/' . $barang->gambar) }}" alt="{{ $barang->nama_barang }}"
                      class="img-fluid rounded shadow" style="max-height: 300px;">
