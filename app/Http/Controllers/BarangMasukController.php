@@ -6,7 +6,7 @@ use App\Models\Barang;
 use App\Models\BarangMasuk;
 use App\Models\BarangUnit;
 use App\Http\Requests\storeBarangMasukReq;
-use App\Http\Requests\UpdateBarangMasukReq;
+use App\Http\Requests\updateBarangMasukReq;
 use App\Exports\BarangMasukExport;
 use Maatwebsite\Excel\Facades\Excel;
 
@@ -80,7 +80,7 @@ class BarangMasukController extends Controller
         return redirect()->route('master-data.barang-masuk.index');
     }
 
-    public function update(UpdateBarangMasukReq $request, BarangMasuk $barangMasuk)
+    public function update(updateBarangMasukReq $request, BarangMasuk $barangMasuk)
     {
         $barang = $barangMasuk->barang;
         $barang->decrement('stok', $barangMasuk->jumlah);

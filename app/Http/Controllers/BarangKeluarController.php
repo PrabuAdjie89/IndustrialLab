@@ -93,63 +93,71 @@ class BarangKeluarController extends Controller
         return redirect()->route('master-data.barang-keluar.index');
     }
 
-    public function update(
-        UpdateBarangKeluarReq $request,
-        BarangKeluar $barangKeluar
-    )
+    public function update(UpdateBarangKeluarReq $request,BarangKeluar $barangKeluar)
     {
-        $barang = $barangKeluar->barang;
+        $request->validate([
 
-        $lastUrut = BarangUnit::getLastUrut($barang->id);
+            'barang_id' => [
+                'required',
+                'exists:barangs,id'
+            ],
 
+            'unit_ids' => [
+                'required',
+                'array',
+                'min:1'
+            ],
+
+            'unit_ids.*' => [
+                'exists:barang_units,id'
+            ],
+
+            'tanggal_keluar' => [
+                'required',
+                'date'
+            ],
+
+        ]);
+        $barangLama = $barangKeluar->barang;
+        $lastUrut = BarangUnit::getLastUrut($barangLama->id);
         for ($i = 1; $i <= $barangKeluar->jumlah; $i++) {
 
             $nomorUrut = $lastUrut + $i;
-
             BarangUnit::create([
-
-                'barang_id' => $barang->id,
-
+                'barang_id' => $barangLama->id,
                 'kode_unit' => BarangUnit::generateKodeUnit(
-                    $barang->kode_barang,
+                    $barangLama->kode_barang,
                     $nomorUrut
                 ),
-
                 'status' => 'tersedia',
-
                 'kondisi' => 'Baik',
             ]);
+
         }
 
+        $jumlah = count($request->unit_ids);
         $barangKeluar->update([
-            'barang_id'      => $request->barang_id,
-
-            'jumlah'         => $request->jumlah,
-
+            'barang_id' => $request->barang_id,
+            'jumlah' => $jumlah,
             'tanggal_keluar' => $request->tanggal_keluar,
+            'keterangan' => $request->keterangan,
 
-            'keterangan'     => $request->keterangan,
         ]);
 
-        $units = $barang->units()
-            ->where('status', 'tersedia')
-            ->latest()
-            ->take($request->jumlah)
-            ->get();
-
-        foreach ($units as $unit) {
-
-            $unit->delete();
-
-        }
-
-        $barang->update([
-            'stok' => $barang->units()->count()
+        BarangUnit::whereIn(
+            'id',
+            $request->unit_ids
+        )->delete();
+        $barangBaru = Barang::find($request->barang_id);
+        $barangBaru->update([
+            'stok' => $barangBaru->units()->count()
         ]);
-
-        toast()->success('Barang keluar berhasil diperbarui');
-
-        return redirect()->route('master-data.barang-keluar.index');
+        toast()->success(
+            'Barang keluar berhasil diperbarui'
+        );
+        return redirect()->route(
+            'master-data.barang-keluar.index'
+        );
     }
 
     public function export()
