@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\updateKategoriBarangRequest;
 use App\Models\KategoriBarang;
 use Illuminate\Http\Request;
-use App\Http\Requests\StoreKategoriBarangRequest;
+use App\Http\Requests\storeKategoriBarangRequest;
 
 
 
