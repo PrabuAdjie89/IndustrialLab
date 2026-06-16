@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Barang;
 use App\Models\BarangMasuk;
 use App\Models\BarangUnit;
-use App\Http\Requests\StoreBarangMasukReq;
+use App\Http\Requests\storeBarangMasukReq;
 use App\Http\Requests\UpdateBarangMasukReq;
 use App\Exports\BarangMasukExport;
 use Maatwebsite\Excel\Facades\Excel;
@@ -38,7 +38,7 @@ class BarangMasukController extends Controller
         return view('barang-masuk.index', compact('pageTitle', 'data'));
     }
 
-    public function store(StoreBarangMasukReq $request)
+    public function store(storeBarangMasukReq $request)
     {
         $barangMasuk = BarangMasuk::create([
             'barang_id'     => $request->barang_id,
