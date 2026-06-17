@@ -290,7 +290,7 @@ class PeminjamanRuangController extends Controller
 
         return Excel::download(
 
-            new PeminjamanRuanganExport(
+            new PeminjamanRuangExport(
                 $tanggalAwal,
                 $tanggalAkhir
             ),
