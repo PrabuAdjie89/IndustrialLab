@@ -11,7 +11,7 @@ use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
 use PhpOffice\PhpSpreadsheet\Style\Fill;
 use PhpOffice\PhpSpreadsheet\Style\Border;
 
-class PeminjamanRuanganExport implements
+class PeminjamanRuangExport implements
     FromCollection,
     WithHeadings,
     ShouldAutoSize,
