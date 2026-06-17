@@ -69,7 +69,7 @@
 
                         <div class="d-flex justify-content-md-end">
                         @if(auth()->user()->isLaboran() || auth()->user()->isKalab())
-                            <x-peminjaman.form-exportpeminjamanbarang />
+                            <x-peminjaman-ruang.form-exportpeminjamanRuang />
                         @endif
                         <x-peminjaman-ruang.form-peminjaman-ruang :ruangans="$ruangans"/>
 
