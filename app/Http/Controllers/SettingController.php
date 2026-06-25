@@ -11,16 +11,22 @@ class SettingController extends Controller
     {
         $pageTitle = 'Pengaturan SOP';
 
-        $sop = Setting::firstOrCreate(
-            ['key' => 'sop_peminjaman'],
-            ['value' => 'Belum ada SOP']
+        $sopBarang = Setting::firstOrCreate(
+            ['key' => 'sop_peminjaman_barang'],
+            ['value' => 'Belum ada SOP Peminjaman Barang']
+        );
+
+        $sopRuangan = Setting::firstOrCreate(
+            ['key' => 'sop_peminjaman_ruangan'],
+            ['value' => 'Belum ada SOP Peminjaman Ruangan']
         );
 
         return view(
             'setting.index',
             compact(
                 'pageTitle',
-                'sop'
+                'sopBarang',
+                'sopRuangan'
             )
         );
     }
@@ -28,12 +34,18 @@ class SettingController extends Controller
     public function updateSop(Request $request)
     {
         $request->validate([
-            'sop' => 'required'
+            'sop_barang'  => 'required',
+            'sop_ruangan' => 'required',
         ]);
 
         Setting::updateOrCreate(
-            ['key' => 'sop_peminjaman'],
-            ['value' => $request->sop]
+            ['key' => 'sop_peminjaman_barang'],
+            ['value' => $request->sop_barang]
+        );
+
+        Setting::updateOrCreate(
+            ['key' => 'sop_peminjaman_ruangan'],
+            ['value' => $request->sop_ruangan]
         );
 
         toast()->success('SOP berhasil diperbarui');

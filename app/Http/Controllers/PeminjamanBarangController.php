@@ -2,7 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\User;
 use App\Models\PeminjamanBarang;
+use App\Notifications\PengajuanPeminjamanBarang;
+use App\Notifications\StatusPeminjamanBarang;
 use App\Models\DetailPeminjamanAlat;
 use App\Models\Setting;
 use Illuminate\Http\Request;
@@ -33,9 +36,11 @@ class PeminjamanBarangController extends Controller
         $barangs = \App\Models\Barang::where('bisa_dipinjam', true)->get();
 
         // Ambil SOP dari database
-        $sop = Setting::where('key', 'sop_peminjaman')
-            ->value('value');
-
+        $sop = Setting::where(
+            'key',
+            'sop_peminjaman_barang'
+        )->value('value');
+        
         return view(
             'peminjaman.index',
             compact(
@@ -89,11 +94,22 @@ class PeminjamanBarangController extends Controller
             
 
         }
+        $peminjaman->load('user', 'detailPeminjaman.barang');
+
+        $users = User::whereIn('role', ['laboran', 'kalab'])
+            ->whereNotNull('email_verified_at')
+            ->get();
+
+        foreach ($users as $user) {
+            $user->notify(new PengajuanPeminjamanBarang($peminjaman));
+        }
         
     });
 
     toast()->success('Pengajuan peminjaman berhasil dikirim');
     
+
+
     return back();
     
     }
@@ -146,6 +162,12 @@ class PeminjamanBarangController extends Controller
                 $peminjaman->update([
                     'status' => $request->status,
                 ]);
+
+                $peminjaman->load('user', 'detailPeminjaman.barang');
+
+                $peminjaman->user->notify(
+                    new StatusPeminjamanBarang($peminjaman)
+                );
             });
 
         } catch (\Exception $e) {

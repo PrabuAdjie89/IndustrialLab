@@ -2,8 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\User;
+use App\Notifications\PengajuanPeminjamanRuangan;
+use App\Notifications\StatusPeminjamanRuangan;
 use App\Models\PeminjamanRuangan;
 use App\Models\ruangan;
+use App\Models\Setting;
 use Carbon\Carbon;
 use App\Http\Requests\storePeminjamanRuanganReq;
 use App\Http\Requests\updatePeminjamanRuanganReq;
@@ -53,7 +57,11 @@ class PeminjamanRuangController extends Controller
 
         $ruangans = ruangan::all();
 
-        return view('peminjaman-ruang.index', compact('pageTitle', 'peminjamanRuang', 'ruangans', 'jadwal', 'bulan', 'tahun', 'jumlahHari'));
+        $sop = Setting::where(
+            'key',
+            'sop_peminjaman_ruangan'
+        )->value('value');
+        return view('peminjaman-ruang.index', compact('pageTitle', 'peminjamanRuang', 'ruangans', 'jadwal', 'bulan', 'tahun', 'jumlahHari', 'sop'));
     }
     public function jadwal()
     {
@@ -129,13 +137,25 @@ class PeminjamanRuangController extends Controller
                     }
                 }
 
-                PeminjamanRuangan::create([
+                $peminjamanruangan = PeminjamanRuangan::create([
                     ...$request->validated(),
                     'user_id'     => $user->id,
                     'status'      => $status,
                     'approved_by' => $approvedBy,
                     'approved_at' => $approvedAt,
                 ]);
+
+                $peminjamanruangan->load('user','ruangan');
+
+                $users = User::whereIn('role', ['laboran', 'kalab'])
+                    ->whereNotNull('email_verified_at')
+                    ->get();
+
+                foreach ($users as $user) {
+                    $user->notify(new PengajuanPeminjamanRuangan($peminjamanruangan));
+                }
+
+
             });
 
         } catch (\Exception $e) {
@@ -183,6 +203,12 @@ class PeminjamanRuangController extends Controller
                     'approved_by' => auth()->id(),
                     'approved_at' => now(),
                 ]);
+
+                $peminjamanRuang->load('user','ruangan');
+
+                $peminjamanRuang->user->notify(
+                    new StatusPeminjamanRuangan($peminjamanRuang)
+                );
             });
 
         } catch (\Exception $e) {

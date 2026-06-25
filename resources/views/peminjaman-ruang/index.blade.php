@@ -78,6 +78,21 @@
                     </div>
 
                 </div>
+                @if(!empty($sop))
+                <div class="card border-info shadow-sm mb-4">
+                    <div class="card-header bg-info text-white">
+                        <strong>
+                            📋 Informasi & SOP Peminjaman
+                        </strong>
+                    </div>
+
+                    <div class="card-body">
+                        <div style="white-space: pre-line;">
+                            {{ $sop }}
+                        </div>
+                    </div>
+                </div>
+                @endif
 
                 <div class="table-responsive">
 

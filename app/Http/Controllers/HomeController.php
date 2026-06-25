@@ -65,6 +65,15 @@ class HomeController extends Controller
             ->take(5)
             ->get();
 
+        $barangBisaDipinjam = Barang::where(
+            'bisa_dipinjam',
+            true
+        )
+        ->where('stok', '>', 0)
+        ->orderBy('nama_barang')
+        ->take(10)
+        ->get();
+
         $peminjamanTerbaru = PeminjamanBarang::latest()
             ->take(5)
             ->get();
@@ -135,7 +144,8 @@ class HomeController extends Controller
             'chartLabels',
             'chartData',
             'chartBarangMasuk',
-            'chartBarangKeluar'
+            'chartBarangKeluar',
+            'barangBisaDipinjam'
         ));
     }
 }

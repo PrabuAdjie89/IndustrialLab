@@ -513,8 +513,81 @@
 
     </div>
 
-    @endif
 
+
+    @endif
+    {{-- daftar barang yang dapat dipinjam --}}
+    <div class="row g-3 mb-4">
+
+        <div class="col-12">
+
+            <div class="card border-0 shadow-sm">
+
+                <div class="card-header bg-white border-0">
+
+                    <h5 class="mb-0 fw-semibold">
+                        Daftar Barang yang Dapat Dipinjam
+                    </h5>
+
+                </div>
+
+                <div class="card-body table-responsive">
+
+                    <table class="table table-hover align-middle">
+
+                        <thead>
+
+                            <tr>
+                                <th>Kode Barang</th>
+                                <th>Nama Barang</th>
+                                <th>Stok</th>
+                            </tr>
+
+                        </thead>
+
+                        <tbody>
+
+                            @forelse($barangBisaDipinjam as $item)
+
+                            <tr>
+
+                                <td>
+                                    {{ $item->kode_barang }}
+                                </td>
+
+                                <td>
+                                    {{ $item->nama_barang }}
+                                </td>
+
+                                <td>
+                                    {{ $item->stok }}
+                                </td>
+
+                            </tr>
+
+                            @empty
+
+                            <tr>
+
+                                <td colspan="3" class="text-center">
+                                    Tidak ada barang yang dapat dipinjam
+                                </td>
+
+                            </tr>
+
+                            @endforelse
+
+                        </tbody>
+
+                    </table>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
     {{-- peminjaman terbaru --}}
     <div class="row g-3">
 
