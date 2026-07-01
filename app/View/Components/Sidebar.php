@@ -84,13 +84,7 @@ class Sidebar extends Component
                 'icon' => 'fas fa-building',
                 'is_dropdown' => false
             ],
-            [
-                'label' => 'Pengaturan SOP',
-                'route' => 'settings.sop',
-                'is_active' => request()->routeIs('settings.*'),
-                'icon' => 'fas fa-file-alt',
-                'is_dropdown' => false
-            ],
+
             ] : []),
 
 
@@ -109,6 +103,14 @@ class Sidebar extends Component
                 'is_active' => request()->routeIs('user.*'),
                 'icon' => 'fas fa-users-cog',
                 'is_dropdown' => false
+            ],
+            [
+                'label' => 'Pengaturan SOP',
+                'route' => 'settings.sop',
+                'is_active' => request()->routeIs('settings.*'),
+                'icon' => 'fas fa-file-alt',
+                'is_dropdown' => false
+            
             ]] : []),
 
         ];

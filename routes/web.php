@@ -53,10 +53,7 @@ Route::middleware('auth')->group(function () {
     });
 
     Route::middleware('role:laboran,kalab')->group(function () {
-        Route::get('/pengaturan-sop', [SettingController::class, 'sop'])->name('settings.sop');
 
-        Route::post('/pengaturan-sop', [SettingController::class, 'updateSop'])
-            ->name('settings.sop.update');
 
         Route::prefix('ruangan')->name('ruangan.')->group(function () {
 
@@ -144,7 +141,9 @@ Route::middleware('auth')->group(function () {
     });
 
     Route::middleware('role:laboran')->group(function () {
-
+        Route::get('/pengaturan-sop', [SettingController::class, 'sop'])->name('settings.sop');
+        Route::post('/pengaturan-sop', [SettingController::class, 'updateSop'])
+            ->name('settings.sop.update');
         Route::get('/user-management',[UserController::class, 'index'])->name('user.index');
         Route::put('/user-management/{user}',[UserController::class, 'updateRole'])->name('user.updateRole');
         Route::delete('/user-management/{user}',[UserController::class, 'destroy'])->name('user.destroy');
