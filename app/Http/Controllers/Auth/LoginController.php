@@ -42,11 +42,14 @@ class LoginController extends Controller
 
     protected function authenticated($request, $user)
     {
-        if (! $user->hasVerifiedEmail()) {
-            auth()->logout();
+        // if (! $user->hasVerifiedEmail()) {
+        //     auth()->logout();
 
-            return redirect()->route('login')
-                ->with('error', 'Akun Anda belum diverifikasi. Silakan cek email untuk verifikasi sebelum login.');
-        }
+        //     return redirect()->route('login')
+        //         ->with('error', 'Akun Anda belum diverifikasi. Silakan cek email untuk verifikasi sebelum login.');
+        // }
+
+        $this->middleware('guest')->except('logout');
+        $this->middleware('auth')->only('logout');
     }
 }
