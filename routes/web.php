@@ -20,7 +20,7 @@ Route::get('/', function () {
     return view('auth.login');
 });
 
-Auth::routes(['verify' => true]);
+Auth::routes();
 
 Route::get('/auth/google', [GoogleAuthController::class, 'redirect'])->name('google.login');
 
@@ -29,7 +29,7 @@ Route::get('/auth/google/callback', [GoogleAuthController::class, 'callback']);
 
 
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])
-    ->middleware(['auth', 'verified'])
+    ->middleware(['auth'])
     ->name('home');
 Route::get('/inventory/{kode_unit}', [PublicInventoryController::class,'show'])->name('inventory.public.show');
 Route::get('/monitor-jadwal-ruangan',[MonitorRuanganController::class, 'monitor'])->name('peminjaman-ruang.monitor');
