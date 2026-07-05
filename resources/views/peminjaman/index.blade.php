@@ -23,7 +23,7 @@
             <!-- Button -->
             <div class="col-12 col-md-4">
                 <div class="d-flex justify-content-md-end">
-                    @if(auth()->user()->isLaboran() || auth()->user()->isKalab())
+                    @if(auth()->user()->isLaboran() || auth()->user()->isKalab() || auth()->user()->isKaprodi())
                         <x-peminjaman.form-exportpeminjamanbarang />
                     @endif
                     <br>
@@ -153,7 +153,7 @@
                                 </a>
 
                                 {{-- hanya laboran & kalab --}}
-                                @if(auth()->user()->isLaboran() || auth()->user()->isKalab())
+                                @if(auth()->user()->isLaboran() || auth()->user()->isKalab() || auth()->user()->isKaprodi())
 
                                     {{-- status menunggu --}}
                                     @if ($item->status === 'menunggu')

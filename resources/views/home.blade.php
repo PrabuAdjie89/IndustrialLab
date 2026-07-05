@@ -6,7 +6,7 @@
 
 <div class="container-fluid">
 
-    @if(auth()->user()->isLaboran() || auth()->user()->isKalab())
+    @if(auth()->user()->isLaboran() || auth()->user()->isKalab() || auth()->user()->isKaprodi())
 
     {{-- statistik --}}
     <div class="row g-3 mb-4">
@@ -56,7 +56,7 @@
                         <div>
 
                             <p class="text-muted mb-1">
-                                Total Peminjaman
+                                Total Peminjaman Alat
                             </p>
 
                             <h2 class="fw-bold">
@@ -761,7 +761,7 @@
 
 </div>
 
-@if(auth()->user()->isLaboran() || auth()->user()->isKalab())
+@if(auth()->user()->isLaboran() || auth()->user()->isKalab() || auth()->user()->isKaprodi())
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 

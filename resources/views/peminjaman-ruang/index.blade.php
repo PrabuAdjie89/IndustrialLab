@@ -68,7 +68,7 @@
                     <div class="col-12 col-md-4">
 
                         <div class="d-flex justify-content-md-end">
-                        @if(auth()->user()->isLaboran() || auth()->user()->isKalab())
+                        @if(auth()->user()->isLaboran() || auth()->user()->isKalab() || auth()->user()->isKaprodi())
                             <x-peminjaman-ruang.form-exportpeminjamanRuang />
                         @endif
                         <x-peminjaman-ruang.form-peminjaman-ruang :ruangans="$ruangans"/>
@@ -450,7 +450,7 @@
         tabindex="-1"
     >
 
-        <div class="modal-dialog modal-lg">
+        <div class="modal-dialog modal-lg modal-dialog-scrollable modal-fullscreen-sm-down">
 
             <div class="modal-content">
 
@@ -468,62 +468,66 @@
                 </div>
 
                 <div class="modal-body">
+                    <div class="table-responsive">
+                        <table class="table table-bordered">
 
-                    <table class="table table-bordered">
-
-                        <thead>
-
-                            <tr>
-
-                                <th>No</th>
-                                <th>Peminjam</th>
-                                <th>Kegiatan</th>
-                                <th>Waktu</th>
-                                <th>Status</th>
-
-                            </tr>
-
-                        </thead>
-
-                        <tbody>
-
-                            @foreach($items as $i => $item)
+                            <thead>
 
                                 <tr>
 
-                                    <td>
-                                        {{ $i + 1 }}
-                                    </td>
-
-                                    <td>
-                                        {{ $item->nama_peminjam }}
-                                    </td>
-
-                                    <td>
-                                        {{ $item->nama_kegiatan }}
-                                    </td>
-
-                                    <td>
-                                        {{ $item->waktu_mulai }}
-                                        -
-                                        {{ $item->waktu_selesai }}
-                                    </td>
-
-                                    <td>
-
-                                        <span class="badge bg-success">
-                                            {{ ucfirst($item->status_realtime) }}
-                                        </span>
-
-                                    </td>
+                                    <th>No</th>
+                                    <th>Peminjam</th>
+                                    <th>Kegiatan</th>
+                                    <th>Waktu</th>
+                                    <th>Status</th>
 
                                 </tr>
 
-                            @endforeach
+                            </thead>
 
-                        </tbody>
+                            <tbody>
 
-                    </table>
+                                @foreach($items as $i => $item)
+
+                                    <tr>
+
+                                        <td>
+                                            {{ $i + 1 }}
+                                        </td>
+
+                                        <td>
+                                            {{ $item->nama_peminjam }}
+                                        </td>
+
+                                        <td>
+                                            {{ $item->nama_kegiatan }}
+                                        </td>
+
+                                        <td>
+                                            {{ $item->waktu_mulai }}
+                                            -
+                                            {{ $item->waktu_selesai }}
+                                        </td>
+
+                                        <td>
+
+                                            <span class="badge bg-success">
+                                                {{ ucfirst($item->status_realtime) }}
+                                            </span>
+
+                                        </td>
+
+                                    </tr>
+
+                                @endforeach
+
+                            </tbody>
+
+                        </table>
+
+                    </div>
+
+
 
                 </div>
 

@@ -25,7 +25,7 @@ class Sidebar extends Component
             ],
 
 
-            ...($user && ($user->isLaboran() || $user->isKalab()) ? [[
+            ...($user && ($user->isLaboran() || $user->isKalab() || $user->isKaprodi()) ? [[
                 'label' => 'Master Data',
                 'route' => '#',
                 'is_active' => request()->routeIs('master-data.*'),
@@ -77,7 +77,7 @@ class Sidebar extends Component
             ],
 
 
-            ...($user && ($user->isLaboran() || $user->isKalab()) ? [[
+            ...($user && ($user->isLaboran() || $user->isKalab() || $user->isKaprodi()) ? [[
                 'label' => 'Ruangan',
                 'route' => 'ruangan.index',
                 'is_active' => request()->routeIs('ruangan.*'),

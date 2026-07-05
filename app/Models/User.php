@@ -9,7 +9,7 @@ use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 
 
-class User extends Authenticatable  // <-- WAJIB
+class User extends Authenticatable //implements MustVerifyEmail // <-- WAJIB
 {
     use HasApiTokens, HasFactory, Notifiable;
 
@@ -48,6 +48,10 @@ class User extends Authenticatable  // <-- WAJIB
     public function isKalab()
     {
         return $this->role === 'kalab';
+    }
+    public function isKaprodi()
+    {
+        return $this->role === 'kaprodi';
     }
 
 }

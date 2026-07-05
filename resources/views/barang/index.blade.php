@@ -44,8 +44,8 @@
                 <thead class="table-light">
                     <tr>
                         <th class="text-center" style="width: 50px">No</th>
-                        <th>Kode Barang</th>
-                        <th>Nama Barang</th>
+                        <th>Kode Alat</th>
+                        <th>Nama Alat</th>
                         <th>Kategori</th>
                         <th class="text-center">Stok</th>
                         <th class="text-center">Status Peminjaman</th>
@@ -104,7 +104,7 @@
                     @empty
                     <tr>
                         <td colspan="{{ auth()->user()->role === 'laboran' ? 7 : 6 }}"
-                            class="text-center">Tidak ada data barang
+                            class="text-center">Tidak ada data Alat
                         </td>
                     </tr>
                     @endforelse

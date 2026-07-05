@@ -37,7 +37,7 @@ Route::get('/inventory/{kode_unit}', [PublicInventoryController::class,'show'])-
 Route::get('/monitor-jadwal-ruangan',[MonitorRuanganController::class, 'monitor'])->name('peminjaman-ruang.monitor');
 
 Route::middleware('auth')->group(function () {
-    Route::middleware('role:laboran,kalab')->group(function () {
+    Route::middleware('role:laboran,kalab,kaprodi')->group(function () {
 
         Route::prefix('master-data')->name('master-data.')->group(function () {
             Route::resource('kategori-barang', KategoriBarangController::class);
@@ -54,7 +54,7 @@ Route::middleware('auth')->group(function () {
 
     });
 
-    Route::middleware('role:laboran,kalab')->group(function () {
+    Route::middleware('role:laboran,kalab,kaprodi')->group(function () {
 
 
         Route::prefix('ruangan')->name('ruangan.')->group(function () {
@@ -102,7 +102,7 @@ Route::middleware('auth')->group(function () {
             '{peminjaman}/verify',
             [PeminjamanBarangController::class, 'verify']
         )
-        ->middleware('role:laboran,kalab')
+        ->middleware('role:laboran,kalab,kaprodi')
         ->name('verify');
 
     });
@@ -121,7 +121,7 @@ Route::middleware('auth')->group(function () {
             Route::put('{peminjamanRuang}',[PeminjamanRuangController::class, 'update'])
                 ->name('update');
             Route::put('{peminjamanRuang}/verify',[PeminjamanRuangController::class, 'verify'])
-                ->middleware('role:laboran,kalab')
+                ->middleware('role:laboran,kalab,kaprodi')
                 ->name('verify');
             Route::post('{peminjamanRuang}/selesai',[PeminjamanRuangController::class, 'selesai'])
                 ->name('selesai');
@@ -131,7 +131,7 @@ Route::middleware('auth')->group(function () {
 
         });
 
-    Route::middleware('role:laboran,kalab')->group(function () {
+    Route::middleware('role:laboran,kalab,kaprodi')->group(function () {
 
         Route::prefix('laporan')->name('laporan.')->group(function () {
 

@@ -22,7 +22,7 @@ class UserController extends Controller
     public function updateRole(Request $request, User $user)
     {
         $request->validate([
-            'role' => 'required|in:user,asisten,laboran,kalab'
+            'role' => 'required|in:user,asisten,laboran,kalab,kaprodi'
         ]);
 
         $user->update([

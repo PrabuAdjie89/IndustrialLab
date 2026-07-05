@@ -7,90 +7,103 @@
 
         <h5 class="mb-4">Manajemen User</h5>
 
-        <table class="table table-bordered">
-            <thead>
-                <tr>
-                    <th>No</th>
-                    <th>Nama</th>
-                    <th>Email</th>
-                    <th>Role</th>
-                    <th style="width: 300px">Aksi</th>
-                </tr>
-            </thead>
+        <div class="table-responsive">
+            <table class="table table-bordered align-middle">
+                <thead class="table-light">
+                    <tr>
+                        <th style="width:70px;">No</th>
+                        <th>Nama</th>
+                        <th>Email</th>
+                        <th style="width:120px;">Role</th>
+                        <th style="min-width:280px;">Aksi</th>
+                    </tr>
+                </thead>
 
-            <tbody>
-                @forelse($users as $index => $user)
-                <tr>
-                    <td>{{ $users->firstItem() + $index }}</td>
+                <tbody>
+                    @forelse($users as $index => $user)
+                    <tr>
+                        <td>{{ $users->firstItem() + $index }}</td>
 
-                    <td>{{ $user->name }}</td>
+                        <td>{{ $user->name }}</td>
 
-                    <td>{{ $user->email }}</td>
+                        <td class="text-break">
+                            {{ $user->email }}
+                        </td>
 
-                    <td>
-                        <span class="badge bg-info">
-                            {{ $user->role }}
-                        </span>
-                    </td>
+                        <td>
+                            <span class="badge bg-info">
+                                {{ $user->role }}
+                            </span>
+                        </td>
 
-                    <td>
-                        <div class="d-flex flex-column gap-2">
+                        <td>
+                            <div class="d-flex flex-column gap-2">
 
-                            {{-- Update Role --}}
-                            <form action="{{ route('user.updateRole', $user->id) }}"
-                                  method="POST">
-                                @csrf
-                                @method('PUT')
+                                {{-- Update Role --}}
+                                <form action="{{ route('user.updateRole', $user->id) }}"
+                                      method="POST">
+                                    @csrf
+                                    @method('PUT')
 
-                                <div class="d-flex gap-2">
+                                    <div class="row g-2">
+                                        <div class="col-12 col-md">
+                                            <select name="role" class="form-select">
+                                                <option value="user"
+                                                    {{ $user->role == 'user' ? 'selected' : '' }}>
+                                                    User
+                                                </option>
 
-                                    <select name="role" class="form-select">
-                                        <option value="user"
-                                            {{ $user->role == 'user' ? 'selected' : '' }}>
-                                            User
-                                        </option>
+                                                <option value="asisten"
+                                                    {{ $user->role == 'asisten' ? 'selected' : '' }}>
+                                                    Asisten
+                                                </option>
 
-                                        <option value="asisten"
-                                            {{ $user->role == 'asisten' ? 'selected' : '' }}>
-                                            Asisten
-                                        </option>
+                                                <option value="laboran"
+                                                    {{ $user->role == 'laboran' ? 'selected' : '' }}>
+                                                    Laboran
+                                                </option>
 
-                                        <option value="laboran"
-                                            {{ $user->role == 'laboran' ? 'selected' : '' }}>
-                                            Laboran
-                                        </option>
+                                                <option value="kalab"
+                                                    {{ $user->role == 'kalab' ? 'selected' : '' }}>
+                                                    Kalab
+                                                </option>
+                                                
+                                                <option value="kaprodi"
+                                                    {{ $user->role == 'kaprodi' ? 'selected' : '' }}>
+                                                    kaprodi
+                                                </option>
+                                            </select>
+                                        </div>
 
-                                        <option value="kalab"
-                                            {{ $user->role == 'kalab' ? 'selected' : '' }}>
-                                            Kalab
-                                        </option>
-                                    </select>
+                                        <div class="col-12 col-md-auto">
+                                            <button type="submit"
+                                                class="btn btn-primary w-100">
+                                                Save
+                                            </button>
+                                        </div>
+                                    </div>
+                                </form>
 
-                                    <button type="submit"
-                                            class="btn btn-primary btn-sm">
-                                        Save
-                                    </button>
-
+                                {{-- Hapus User --}}
+                                <div class="d-grid">
+                                    <x-confirm-delete-user
+                                        :id="$user->id"
+                                        route="user.destroy" />
                                 </div>
-                            </form>
 
-                            {{-- Hapus User --}}
-                            <div>
-                                <x-confirm-delete-user :id="$user->id" route="user.destroy" />
                             </div>
-
-                        </div>
-                    </td>
-                </tr>
-                @empty
-                <tr>
-                    <td colspan="5" class="text-center">
-                        Tidak ada data user
-                    </td>
-                </tr>
-                @endforelse
-            </tbody>
-        </table>
+                        </td>
+                    </tr>
+                    @empty
+                    <tr>
+                        <td colspan="5" class="text-center">
+                            Tidak ada data user
+                        </td>
+                    </tr>
+                    @endforelse
+                </tbody>
+            </table>
+        </div>
 
         <div class="mt-3">
             {{ $users->links() }}
