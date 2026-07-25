@@ -28,7 +28,7 @@ class StatusPeminjamanRuangan extends Notification
 
         $mail = (new MailMessage)
             ->subject('Status Peminjaman Ruangan')
-            ->greeting('Halo ' . $p->nama_peminjam)
+            ->greeting('Halo ' . ucfirst($notifiable->name))
             ->line('Status peminjaman ruangan Anda telah diperbarui.')
             ->line('Ruangan: ' . $p->ruangan->nama_ruangan)
             ->line('Kegiatan: ' . $p->nama_kegiatan)

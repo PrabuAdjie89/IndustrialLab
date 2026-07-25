@@ -44,7 +44,7 @@ class StatusPeminjamanBarang extends Notification
 
         if ($p->status == 'dipinjam') {
             $mail->line('')
-                ->line('Silakan ambil barang sesuai jadwal.');
+                ->line('Silakan ambil barang sesuai jadwal serta membawa KTM.');
         }
 
         if ($p->status == 'ditolak') {
