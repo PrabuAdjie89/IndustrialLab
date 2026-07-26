@@ -1,66 +1,329 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# Sistem Informasi Laboratorium Teknik Industri UMS
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+Sistem Informasi Laboratorium Teknik Industri Universitas Muhammadiyah Surakarta merupakan aplikasi berbasis web yang dikembangkan untuk membantu proses pengelolaan data laboratorium, meliputi inventaris barang, peminjaman barang, peminjaman ruangan, dokumentasi, serta pengelolaan laporan.
 
-## About Laravel
+Aplikasi ini dikembangkan menggunakan framework Laravel sebagai backend dan menggunakan database MySQL sebagai media penyimpanan data.
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+---
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+# Teknologi yang Digunakan
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+## Backend
+- Laravel Framework 10.49.1
+- PHP 8.1.25
 
-## Learning Laravel
+## Database
+- MySQL
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+## Frontend
+- Blade Template
+- Bootstrap
+- JavaScript
 
-You may also try the [Laravel Bootcamp](https://bootcamp.laravel.com), where you will be guided through building a modern Laravel application from scratch.
+## Tools
+- Composer
+- Node.js & NPM
+- XAMPP
+- Git
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+---
 
-## Laravel Sponsors
+# Package Laravel yang Digunakan
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+| Package | Fungsi |
+|---|---|
+| barryvdh/laravel-dompdf | Export laporan ke format PDF |
+| maatwebsite/excel | Export laporan ke format Excel |
+| simplesoftwareio/simple-qrcode | Generate QR Code barang |
+| realrashid/sweet-alert | Alert dan konfirmasi aksi |
+| laravel/sanctum | Authentication |
+| laravel/socialite | Login menggunakan Google |
+| laravel/ui | Authentication scaffolding |
+| resend/resend-laravel | Pengiriman email |
 
-### Premium Partners
+---
 
-- **[Vehikl](https://vehikl.com/)**
-- **[Tighten Co.](https://tighten.co)**
-- **[WebReinvent](https://webreinvent.com/)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel/)**
-- **[Cyber-Duck](https://cyber-duck.co.uk)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Jump24](https://jump24.co.uk)**
-- **[Redberry](https://redberry.international/laravel/)**
-- **[Active Logic](https://activelogic.com)**
-- **[byte5](https://byte5.de)**
-- **[OP.GG](https://op.gg)**
+# Fitur Sistem
 
-## Contributing
+## Manajemen Pengguna
+- Login pengguna
+- Registrasi akun
+- Verifikasi email
+- Hak akses berdasarkan role pengguna
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+## Inventaris Laboratorium
+- Pengelolaan data barang
+- Pengelompokan kategori barang
+- Data barang masuk
+- Data barang keluar
+- Upload dokumentasi barang
+- Generate QR Code barang
 
-## Code of Conduct
+## Peminjaman Barang
+- Pengajuan peminjaman barang
+- Pengelolaan status peminjaman
+- Riwayat peminjaman barang
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+## Peminjaman Ruangan
+- Pengelolaan jadwal penggunaan ruangan
+- Pencatatan informasi peminjaman ruangan
 
-## Security Vulnerabilities
+## Laporan
+- Export laporan Excel
+- Export laporan PDF
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+---
 
-## License
+# Persyaratan Sistem
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+Sebelum menjalankan aplikasi, pastikan perangkat telah memiliki:
+
+- PHP >= 8.1
+- Composer
+- MySQL
+- XAMPP
+- Node.js dan NPM
+- Web Browser
+
+---
+
+# Instalasi
+
+## 1. Clone Repository
+
+Clone repository menggunakan Git:
+
+```bash
+git clone https://github.com/PrabuAdjie89/IndustrialLab.git
+```
+
+Masuk ke folder project:
+
+```bash
+cd IndustrialLab
+```
+
+---
+
+# 2. Install Dependency Laravel
+
+Install seluruh package Laravel yang dibutuhkan menggunakan Composer:
+
+```bash
+composer install
+```
+
+Perintah ini akan menginstall seluruh dependency berdasarkan file `composer.json`.
+
+---
+
+# 3. Install Dependency Frontend
+
+Install package frontend menggunakan NPM:
+
+```bash
+npm install
+```
+
+Kemudian jalankan proses build frontend:
+
+```bash
+npm run build
+```
+
+atau untuk mode development:
+
+```bash
+npm run dev
+```
+
+---
+
+# 4. Konfigurasi Environment
+
+Buat file `.env` dari file `.env.example`:
+
+```bash
+copy .env.example .env
+```
+
+atau pada Linux/Mac:
+
+```bash
+cp .env.example .env
+```
+
+Kemudian buka file `.env` dan sesuaikan konfigurasi database:
+
+```env
+DB_CONNECTION=mysql
+DB_HOST=127.0.0.1
+DB_PORT=3306
+DB_DATABASE=laboratory_app
+DB_USERNAME=root
+DB_PASSWORD=
+```
+
+---
+
+# 5. Membuat Database
+
+Buka XAMPP kemudian aktifkan:
+
+- Apache
+- MySQL
+
+Buat database baru melalui phpMyAdmin:
+
+```
+laboratory_app
+```
+
+---
+
+# 6. Generate Application Key
+
+Jalankan perintah:
+
+```bash
+php artisan key:generate
+```
+
+---
+
+# 7. Migrasi Database
+
+Untuk membuat tabel database jalankan:
+
+```bash
+php artisan migrate --seed
+```
+
+Perintah ini akan membuat struktur tabel dan data awal sistem.
+
+---
+
+# 8. Konfigurasi Storage
+
+Sistem menggunakan Laravel Storage untuk menyimpan file atau gambar.
+
+Jalankan:
+
+```bash
+php artisan storage:link
+```
+
+Perintah ini membuat symbolic link dari:
+
+```
+storage/app/public
+```
+
+ke:
+
+```
+public/storage
+```
+
+sehingga file dapat diakses melalui browser.
+
+---
+
+# 9. Konfigurasi Email
+
+Untuk menggunakan fitur pengiriman email, konfigurasi SMTP pada file `.env`:
+
+```env
+MAIL_MAILER=smtp
+MAIL_HOST=smtp.googlemail.com
+MAIL_PORT=587
+MAIL_USERNAME=email_pengirim
+MAIL_PASSWORD=password_aplikasi
+MAIL_ENCRYPTION=null
+MAIL_FROM_ADDRESS=email_pengirim
+MAIL_FROM_NAME="${APP_NAME}"
+```
+
+Sesuaikan konfigurasi email dengan akun SMTP yang digunakan.
+
+---
+
+# 10. Menjalankan Aplikasi
+
+Jalankan server Laravel:
+
+```bash
+php artisan serve
+```
+
+Kemudian buka browser:
+
+```
+http://127.0.0.1:8000
+```
+
+---
+
+# Akun Pengguna
+
+Akun pengguna dapat dibuat melalui halaman registrasi atau menggunakan data awal dari database seeder.
+
+Contoh role pengguna:
+
+| Role | Akses |
+|---|---|
+| Kepala Laboratorium | Melihat dan mengelola informasi laboratorium |
+| Ketua Program Studi | Melihat informasi dan laporan |
+| Laboran | Mengelola inventaris dan peminjaman |
+| Asisten Laboratorium | Mengelola kebutuhan operasional laboratorium |
+| Mahasiswa | Melakukan peminjaman |
+
+---
+
+# Pengujian Sistem
+
+Pengujian sistem dilakukan menggunakan:
+
+## Blackbox Testing
+
+Digunakan untuk memastikan setiap fungsi sistem berjalan sesuai dengan kebutuhan.
+
+## Usability Testing
+
+Pengujian dilakukan berdasarkan aspek:
+
+- Usefulness
+- Ease of Use
+- Ease of Learning
+- Satisfaction
+
+---
+
+# Struktur Database
+
+Sistem menggunakan database relasional MySQL dengan beberapa tabel utama:
+
+- Users
+- Barang
+- Kategori Barang
+- Barang Masuk
+- Barang Keluar
+- Peminjaman Barang
+- Peminjaman Ruangan
+- Dan tabel pendukung lainnya
+
+---
+
+# Catatan
+
+- File `.env` tidak disertakan dalam repository karena berisi konfigurasi database dan informasi sensitif.
+- Gunakan file `.env.example` sebagai template konfigurasi.
+- Folder `vendor` dan `node_modules` tidak disertakan karena dapat dibuat ulang menggunakan Composer dan NPM.
+
+---
+
+# Developer
+
+**Prabu Adji Satria Wibawa**  
+Program Studi Teknik Industri  
+Universitas Muhammadiyah Surakarta
