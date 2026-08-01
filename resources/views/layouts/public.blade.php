@@ -78,7 +78,7 @@
 
                     <a href="/" class="logo">
                         <img
-                            src="{{ asset('template') }}/assets/img/kaiadmin/logo_light.svg"
+                            src="{{ asset('template') }}/assets/img/kaiadmin/lab.svg"
                             alt="navbar brand"
                             class="navbar-brand"
                             height="20"

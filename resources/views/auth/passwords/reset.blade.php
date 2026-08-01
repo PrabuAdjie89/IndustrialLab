@@ -163,8 +163,6 @@
                                 </button>
 
                             </div>
-
-
                             @error('password')
                                 <div class="invalid-feedback d-block">
                                     {{ $message }}
@@ -172,19 +170,12 @@
                             @enderror
 
                         </div>
-
-
-
                         {{-- Konfirmasi Password --}}
                         <div class="mb-4 text-start">
-
                             <label for="password-confirm" class="form-label">
                                 Konfirmasi Password
                             </label>
-
-
                             <div class="input-group">
-
                                 <input
                                     id="password-confirm"
                                     type="password"
@@ -192,58 +183,32 @@
                                     class="form-control"
                                     required
                                     autocomplete="new-password">
-
-
                                 <button
                                     class="btn btn-light"
                                     type="button"
                                     id="toggleConfirmPassword">
-
                                     <i class="bi bi-eye"></i>
-
                                 </button>
-
                             </div>
-
                         </div>
-
-
-
                         <button
                             type="submit"
                             class="btn btn-outline-light btn-lg w-100">
-
                             Reset Password
-
                         </button>
-
-
                     </form>
-
-
                     <div class="text-center mt-4">
 
                         <a href="{{ route('login') }}"
                            class="text-white-50 text-decoration-none">
-
                             Kembali ke Login
-
                         </a>
-
                     </div>
-
-
                 </div>
-
             </div>
-
         </div>
-
     </div>
 </div>
-
-
-
 <script>
 
     document.getElementById('togglePassword').addEventListener('click', function () {
@@ -291,9 +256,6 @@
         }
 
     });
-
 </script>
-
-
 </body>
 </html>
